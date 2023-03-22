@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -21,6 +20,9 @@ import { captureRef } from 'react-native-view-shot';
 
 import domtoimage from 'dom-to-image';
 import { Platform } from 'react-native';
+
+import { StatusBar } from 'expo-status-bar';
+
 
 export default function App() {
   const imageRef = useRef();
@@ -123,7 +125,7 @@ export default function App() {
         <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
           <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
         </EmojiPicker>
-        <StatusBar style="auto" />
+        <StatusBar style="light" />
       </View>
     </GestureHandlerRootView>
   );
