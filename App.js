@@ -19,6 +19,9 @@ import EmojiSticker from './components/EmojiSticker';
 import * as MediaLibrary from 'expo-media-library';
 import { captureRef } from 'react-native-view-shot';
 
+import domtoimage from 'dom-to-image';
+import { Platform } from 'react-native';
+
 export default function App() {
   const imageRef = useRef();
   const [status, requestPermission] = MediaLibrary.usePermissions();
@@ -58,21 +61,41 @@ export default function App() {
   }
 
   const onSaveImageAsync = async () => {
-    try {
-      const localUri = await captureRef(imageRef, {
-        format: 'png',
-        quality: 1,
-        height: 440
-      })
+    if (Platform.OS !== 'web') {
+      try {
+        const localUri = await captureRef(imageRef, {
+          format: 'png',
+          quality: 1,
+          height: 440
+        })
 
-      await MediaLibrary.saveToLibraryAsync(localUri)
-      if (localUri) {
-        alert('Image saved successfully!')
+        await MediaLibrary.saveToLibraryAsync(localUri)
+        if (localUri) {
+          alert('Image saved successfully!')
+        }
+      } catch (e) {
+        console.log(e)
       }
-    } catch (e) {
-      console.log(e)
+    } else {
+      domtoimage
+        .toJpeg(imageRef.current, {
+          quality: 1,
+          width: 320,
+          height: 440,
+        })
+        .then(dataUrl => {
+          let link = document.createElement('a');
+          link.download = `sticker-smash-${Date.now()}.jpeg`;
+          link.href = dataUrl;
+          link.click();
+        })
+        .catch(e => {
+          console.log(e);
+        });
     }
+
   }
+
 
   return (
     <GestureHandlerRootView style={styles.container}>
